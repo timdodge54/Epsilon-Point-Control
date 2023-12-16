@@ -8,7 +8,7 @@ The unicycle model is a common state space representation to express a different
 The smooth differential drive state consists of its x and y postions $x_1, \, x_2$ it's orientation $\phi$,
 it's forward velocity $\upsilon$ and it angular velocity $\omega$ This state expressed in vector form is then
 
-$$x = \begin{bmatrix}x_1\\ x_2\\ \phi \\ \upsilon \\ \omega\end{bmatrix}$$
+$$x = \begin{bmatrix}x_1\\ x_2\\ \phi\\\upsilon\\\omega\end{bmatrix}$$
 
 The dynamics of this sytem are then defined by $\frac{d}{dx}$ which are expressed by
 
