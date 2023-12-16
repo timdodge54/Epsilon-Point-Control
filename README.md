@@ -113,7 +113,11 @@ $$u_r = \frac{a}{r} - \frac{L}{2r}\alpha, \, u_l = \frac{a}{r} + \frac{L}{2r}\al
 
 ## Trajectory tracking
 
-Trajectory tracking is done by defining the desired state of the $y_\epsilon$ system and finding its first and second derivatives. For this simulation I choose the trajectory to be $y = \begin{bmatrix}x_1\\x_2\end{bmatrix} = \begin{bmatrix}\sin{t}\\t\end{bmatrix}$
+Trajectory tracking is done by defining the desired state of the $y_\epsilon$ system and finding its first and second derivatives. For this simulation I choose the trajectory to be
+
+```math
+y = \begin{bmatrix}x_1\\x_2\end{bmatrix} = \begin{bmatrix}\sin{t}\\t\end{bmatrix}
+```
 
 ## Basic Integration Simulation
 
