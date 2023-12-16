@@ -119,7 +119,7 @@ Trajectory tracking is done by defining the desired state of the $y_\epsilon$ sy
 
 Before using a simulation of the system a basic integration simulation was done to make sure that the system was working as expected. The results of this simulation are shown below.
 
-![Basic Integration Simulation](../figures/approx_drive.png)
+![Basic Integration Simulation](./figures/approx_drive.png)
 
 This is shows that behavior of the system is as expected as time goes on the trajectory converges.
 
@@ -127,7 +127,7 @@ This is shows that behavior of the system is as expected as time goes on the tra
 
 Next i created a basic animation using matplotlib where I utilize the state of the integrated system to move an arrow around on a blank plot. The results of this simulation are shown below.
 
-![MatPlotLib Animation](../figures/new_anim.gif)
+![MatPlotLib Animation](./figures/new_anim.gif)
 
 A little more interesting than a plot but still not very exciting.
 
@@ -135,7 +135,7 @@ A little more interesting than a plot but still not very exciting.
 
 Next I took the controller code and implemented into the ROS2 framework and simulated it in gazebo. I used a basic turtle bot and recalulated the forward and angular velocity of the turtle bot using the smooth differential drive model and published this on the cmd_vel topic. The results of this simulation are shown below.
 
-![Gazebo and ROS2 Simulation](../figures/ros_cont.gif)
+![Gazebo and ROS2 Simulation](./figures/ros_cont.gif)
 
 ## Conclusion
 
