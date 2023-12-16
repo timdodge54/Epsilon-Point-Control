@@ -14,7 +14,9 @@ x = \begin{bmatrix} x_1 \\ x_2\\ \phi\\ \upsilon\\ \omega\end{bmatrix}$
 
 The dynamics of this sytem are then defined by $\frac{d}{dx}$ which are expressed by
 
-$$\dot{x} = \begin{bmatrix}\upsilon\cos{\phi}\\  \upsilon \sin{\phi}\\ \omega \\ a \\ \alpha \end{bmatrix}$$
+```math
+$\dot{x} = \begin{bmatrix}\upsilon\cos{\phi}\\  \upsilon \sin{\phi}\\ \omega \\ a \\ \alpha \end{bmatrix}$
+```
 
 ## Why epsilon point control
 
