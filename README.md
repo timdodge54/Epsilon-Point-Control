@@ -35,7 +35,9 @@ $$y_\epsilon = \begin{bmatrix}x_1\\ x_2\end{bmatrix} + \epsilon \begin{bmatrix}\
 
 To get the full state we must also take the first and second derivatives of $y_\epsilon$.
 
-$$R_{\epsilon} = \begin{bmatrix} \cos{\phi} & - \epsilon\sin{\phi} \\ \sin{\phi} & \epsilon{\cos{\phi}}\end{bmatrix}, \chi_\epsilon = \begin{bmatrix} 0 & - \epsilon\omega \\ \epsilon\omega & 0  \end{bmatrix}, \, \bar{a} = \begin{bmatrix}a\\ \alpha\end{bmatrix}, \, \bar{\upsilon} = \begin{bmatrix}\upsilon\\ \omega\end{bmatrix}$$
+```math
+$R_{\epsilon} = \begin{bmatrix} \cos{\phi} & - \epsilon\sin{\phi} \\ \sin{\phi} & \epsilon{\cos{\phi}}\end{bmatrix}, \chi_\epsilon = \begin{bmatrix} 0 & - \epsilon\omega \\ \epsilon\omega & 0  \end{bmatrix}, \, \bar{a} = \begin{bmatrix}a\\ \alpha\end{bmatrix}, \, \bar{\upsilon} = \begin{bmatrix}\upsilon\\ \omega\end{bmatrix}$
+```
 
 $$ \dot{y}_\epsilon = R_{\epsilon}\bar{\upsilon}, \, \ddot{y}_\epsilon = R_{\epsilon} \chi_\epsilon\bar{\upsilon} + R_{\epsilon}\bar{a}$$
 
