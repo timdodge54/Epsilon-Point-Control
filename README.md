@@ -31,7 +31,9 @@ This basic idea of this is that somepoint $\epsilon$ away on a path that the rob
 
 We can define the point that is $\epsilon$ as $y_\epsilon$.
 
-```math y_\epsilon = \begin{bmatrix}x_1\\ x_2\end{bmatrix} + \epsilon \begin{bmatrix}\cos{\phi}\\\sin{\phi}\end{bmatrix}```
+```math
+y_\epsilon = \begin{bmatrix}x_1\\ x_2\end{bmatrix} + \epsilon \begin{bmatrix}\cos{\phi}\\\sin{\phi}\end{bmatrix}
+```
 
 To get the full state we must also take the first and second derivatives of $y_\epsilon$.
 
@@ -62,7 +64,12 @@ using this we can create an feed back linearized system.
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1\\
 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0\end{bmatrix}y + \begin{bmatrix}0 & 0\\0 & 0\\1 & 0\\0 & 1\end{bmatrix}u
+0 & 0 & 0 & 0
+\end{bmatrix}y + \begin{bmatrix}
+0 & 0\\
+0 & 0\\
+1 & 0\\
+0 & 1\end{bmatrix}u
 ```
 
 ### Finding control gains for the system
