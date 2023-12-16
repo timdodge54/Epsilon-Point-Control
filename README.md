@@ -47,16 +47,23 @@ R_{\epsilon} = \begin{bmatrix} \cos{\phi} & - \epsilon\sin{\phi} \\ \sin{\phi} &
 
 $\ddot{y}_\epsilon$ is a function of $\bar{a}$ and $\bar{\upsilon}$ which are the control inputs of the system so solving for these will give us the control inputs that will allow us to follow a path.
 
-$$\bar{a} = R_{\epsilon}^{-1}(\ddot{y}_\epsilon - R_{\epsilon} \chi_\epsilon\bar{\upsilon})$$
+```math
+\bar{a} = R_{\epsilon}^{-1}(\ddot{y}_\epsilon - R_{\epsilon} \chi_\epsilon\bar{\upsilon})$$
+```
 
 using this we can create an feed back linearized system.
 
-$$\begin{bmatrix}\dot{y}_\epsilon \\ \ddot{y}_\epsilon\end{bmatrix} = Ay + Bu, \text{ where } y = \begin{bmatrix}y_\epsilon \\ \bar{\upsilon}\end{bmatrix}$$
-$$\dot{y} = \begin{bmatrix}
+```math
+\begin{bmatrix}\dot{y}_\epsilon \\ \ddot{y}_\epsilon\end{bmatrix} = Ay + Bu, \text{ where } y = \begin{bmatrix}y_\epsilon \\ \bar{\upsilon}\end{bmatrix}
+```
+
+```math
+\dot{y} = \begin{bmatrix}
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1\\
 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0\end{bmatrix}y + \begin{bmatrix}0 & 0\\0 & 0\\1 & 0\\0 & 1\end{bmatrix}u$$
+0 & 0 & 0 & 0\end{bmatrix}y + \begin{bmatrix}0 & 0\\0 & 0\\1 & 0\\0 & 1\end{bmatrix}u
+```
 
 ### Finding control gains for the system
 
@@ -73,6 +80,7 @@ where $u_{ff}$ is $\ddot{\epsilon}$ and $y_{des}$ is the desired state of the sy
 This control can then be converted to the control for the unicycle model by the following equations.
 
 $$\begin{bmatrix}a\\ \alpha\end{bmatrix} = R_{\epsilon}^{-1} u_y - \hat{\omega}\bar{v}$$
+
 ### Converting Unicycle to Smooth Differential Drive
 
 The unicyle model is not the most realistic model of a differential drive robot. The smooth differential drive model is a more realistic model of a differential drive robot this system is similar but instead of having a forward velocity and angular velocity it has a left and right wheel velocity. The smooth differential drive model is defined by the following equations.
@@ -104,6 +112,7 @@ Skipping some algebra the control inputs for the smooth differential drive model
 $$u_r = \frac{a}{r} - \frac{L}{2r}\alpha, \, u_l = \frac{a}{r} + \frac{L}{2r}\alpha$$
 
 ## Trajectory tracking
+
 Trajectory tracking is done by defining the desired state of the $y_\epsilon$ system and finding its first and second derivatives. For this simulation I choose the trajectory to be $y = \begin{bmatrix}x_1\\x_2\end{bmatrix} = \begin{bmatrix}\sin{t}\\t\end{bmatrix}$
 
 ## Basic Integration Simulation
