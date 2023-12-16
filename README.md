@@ -31,7 +31,7 @@ This basic idea of this is that somepoint $\epsilon$ away on a path that the rob
 
 We can define the point that is $\epsilon$ as $y_\epsilon$.
 
-$$y_\epsilon = \begin{bmatrix}x_1\\ x_2\end{bmatrix} + \epsilon \begin{bmatrix}\cos{\phi}\\\sin{\phi}\end{bmatrix}$$
+```math y_\epsilon = \begin{bmatrix}x_1\\ x_2\end{bmatrix} + \epsilon \begin{bmatrix}\cos{\phi}\\\sin{\phi}\end{bmatrix}```
 
 To get the full state we must also take the first and second derivatives of $y_\epsilon$.
 
