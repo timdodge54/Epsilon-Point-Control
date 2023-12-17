@@ -12,7 +12,7 @@ it's forward velocity $\upsilon$ and it angular velocity $\omega$ This state exp
 x = \begin{bmatrix} x_1 \\ x_2\\ \phi\\ \upsilon\\ \omega\end{bmatrix}$
 ```
 
-The dynamics of this sytem are then defined by $\frac{d}{dx}$ which are expressed by
+The dynamics of this system are then defined by $\frac{d}{dx}$ which are expressed by
 
 ```math
 \dot{x} = \begin{bmatrix}\upsilon\cos{\phi}\\  \upsilon \sin{\phi}\\ \omega \\ a \\ \alpha \end{bmatrix}
@@ -22,14 +22,14 @@ The dynamics of this sytem are then defined by $\frac{d}{dx}$ which are expresse
 
 The difficulty with controlling this system is that it contains what is called "non-holonomic" constraints which are non integratable constraints.
 The constraint with this system is that it cannot move orthogonal to orientation.
-To allievate this we utilize something called epsilon point control.
-This basic idea of this is that somepoint $\epsilon$ away on a path that the robot is following does not have this constriant.
+To alleviate this we utilize something called epsilon point control.
+This basic idea is that if a robot is traveling on a path there is a point $\epsilon$ away that does not have that constraint. So instead of trying to control the robots position we control the position of this point.
 
 ## Math (You can skip this if you want but it is cool!)
 
 ### Definition of epsilon state
 
-We can define the point that is $\epsilon$ as $y_\epsilon$.
+We can define the point that is $\epsilon$ away as $y_\epsilon$.
 
 ```math
 y_\epsilon = \begin{bmatrix}x_1\\ x_2\end{bmatrix} + \epsilon \begin{bmatrix}\cos{\phi}\\\sin{\phi}\end{bmatrix}
@@ -47,7 +47,7 @@ R_{\epsilon} = \begin{bmatrix} \cos{\phi} & - \epsilon\sin{\phi} \\ \sin{\phi} &
 
 ### Feedback linearization
 
-$\ddot{y}_\epsilon$ is a function of $\bar{a}$ and $\bar{\upsilon}$ which are the control inputs of the system so solving for these will give us the control inputs that will allow us to follow a path.
+$\ddot{y}_\epsilon$ is a function of $\bar{a}$ which is the control inputs of the system so solving for this will give us the control inputs that will allow us to follow a path.
 
 ```math
 \bar{a} = R_{\epsilon}^{-1}(\ddot{y}_\epsilon - R_{\epsilon} \chi_\epsilon\bar{\upsilon})$$
@@ -74,7 +74,7 @@ using this we can create an feed back linearized system.
 
 ### Finding control gains for the system
 
-Now that we have a linearized system we can find the control gains for the system. This can be done with either pole placement or LQR. For this i used lqr but since there is no cost associated with the system the gains are the same as pole placement.
+Now that we have a linearized system we can find the control gains for the system. This can be done with either pole placement or LQR. For this I used LQR but since there is no cost associated with system states the Q and R matrices are identity matrices.
 
 $$k = lqr(A,B,Q,R)\, \text{ where } Q = diag([1,1,1,1]), \, R = diag([1,1])$$
 
@@ -90,7 +90,7 @@ $$\begin{bmatrix}a\\ \alpha\end{bmatrix} = R_{\epsilon}^{-1} u_y - \hat{\omega}\
 
 ### Converting Unicycle to Smooth Differential Drive
 
-The unicyle model is not the most realistic model of a differential drive robot. The smooth differential drive model is a more realistic model of a differential drive robot this system is similar but instead of having a forward velocity and angular velocity it has a left and right wheel velocity. The smooth differential drive model is defined by the following equations.
+The unicycle model is not the most realistic model of a differential drive robot. In reality we need to control the rotation for each of the robots wheels. The smooth differential drive model is similar to the unicycle model but just swaps the velocity terms for left and right wheel velocities. The smooth differential drive model is defined by the following equations.
 
  $$
  \dot{x} = \begin{bmatrix}
