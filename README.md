@@ -5,7 +5,7 @@ This is repo shows an example of epsilon point control of the smooth differentia
 ## Introduction
 
 The unicycle model is a common state space representation to express a differential drive robot.
-The smooth differential drive state consists of its x and y postions $x_1, \, x_2$ it's orientation $\phi$,
+The unicycle model state consists of its x and y positions $x_1, \, x_2$ it's orientation $\phi$,
 it's forward velocity $\upsilon$ and it angular velocity $\omega$ This state expressed in vector form is then
 
 ```math
