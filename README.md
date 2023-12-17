@@ -82,7 +82,7 @@ The control input for the linearized system is then
 
 $$ u_y = u_{ff} - k (y - y_{des})$$
 
-where $u_{ff}$ is $\ddot{\epsilon}$ and $y_{des}$ is the desired state of the system.
+where $u_{ff}$ is $\ddot{y_}_\epsilon$ and $y_{des}$ is the desired state of the system.
 
 This control can then be converted to the control for the unicycle model by the following equations.
 
