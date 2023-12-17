@@ -56,7 +56,7 @@ $\ddot{y}_\epsilon$ is a function of $\bar{a}$ and $\bar{\upsilon}$ which are th
 using this we can create an feed back linearized system.
 
 ```math
-\begin{bmatrix}\dot{y}_\epsilon \\ \ddot{y}_\epsilon\end{bmatrix} = Ay + Bu, \text{ where } y = \begin{bmatrix}y_\epsilon \\ \bar{\upsilon}\end{bmatrix}
+\begin{bmatrix}\dot{y}_\epsilon \\ \ddot{y}_\epsilon\end{bmatrix} = Ay + Bu, \text{ where } y = \begin{bmatrix}y_\epsilon \\ \dot{y}_\epsilon \end{bmatrix}
 ```
 
 ```math
