@@ -112,7 +112,7 @@ The unicyle model is not the most realistic model of a differential drive robot.
     \end{bmatrix}
 $$
 
-The conversion can be doen by solving for the setting $u_r$ and $u_l$ equal to the derivative of the second vector $v$ and $w$ above and solving for $u_r$ and $u_l$.
+The conversion can be done by solving for the setting $u_r$ and $u_l$ equal to the derivative of the second vector $v$ and $w$ above and solving for $u_r$ and $u_l$.
 
 Skipping some algebra the control inputs for the smooth differential drive model are
 
