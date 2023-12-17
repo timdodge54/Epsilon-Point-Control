@@ -81,7 +81,7 @@ class EpsilonPointController(Node):
         self.r = r
         self.L = L
         self.k = ct.lqr(self.A, self.B, Q, R)[0]
-        print(f"K: {self.k}")
+        # print(f"K: {self.k}")
         self.t_span = np.arange(0, t_f, 0.01)
         self.epsilon = epsilon
         self.controls_history: list[tuple[float, float]] = []
@@ -92,7 +92,7 @@ class EpsilonPointController(Node):
         plot_results(np.array(tspan),
                      sol.T, np.array(controls).T, "r")
         states = StatePlotting()
-        print(tspan)
+        # print(tspan)
         states.tspan = self.control_tspan.tolist()
         states.x = sol.T[0, :].tolist()
         states.y = sol.T[1, :].tolist()
@@ -157,14 +157,14 @@ class EpsilonPointController(Node):
         return q, q_dot, q_d_dot, y_epsilon, y_epsilon_dot
 
     def send_cmd_vel(self) -> None:
-        self.get_logger().info(f"command_pointer: {self.command_pointer}")
+        # self.get_logger().info(f"command_pointer: {self.command_pointer}")
         if self.command_pointer < len(self.v):
             cmd_vel = Twist()
             cmd_vel.linear.x = self.v[self.command_pointer]
             cmd_vel.angular.z = self.w[self.command_pointer]
             self.cmd_pub.publish(cmd_vel)
-            self.get_logger().info(
-                f"v: {cmd_vel.linear.x}, w: {cmd_vel.angular.z}")
+            # self.get_logger().info(
+                # f"v: {cmd_vel.linear.x}, w: {cmd_vel.angular.z}")
             self.command_pointer += 1
 
     def calc_abar(
@@ -287,7 +287,7 @@ class EpsilonPointController(Node):
             t_span: time span
         """
         control_inputs = []
-        print(x_sol[1].shape)
+        # print(x_sol[1].shape)
         for i, t in enumerate(self.t_span):
             x = x_sol[i]
             control_inputs.append(self.get_control_input(x, t))
@@ -305,7 +305,7 @@ class EpsilonPointController(Node):
         """
         x = x_0.reshape(-1, 1)
         x = x.flatten()
-        print(x.shape)
+        # print(x.shape)
         sol = odeint(self.dynamics, x, self.t_span)
         return sol
 
