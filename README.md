@@ -89,7 +89,9 @@ $y_{des}$ is the desired state of the system.
 
 This control can then be converted to the control for the unicycle model by the following equations.
 
-$$\begin{bmatrix}a\\ \alpha\end{bmatrix} = R_{\epsilon}^{-1} u_y - \hat{\omega}\bar{v}$$
+```math
+\begin{bmatrix}a\\ \alpha\end{bmatrix} = R_{\epsilon}^{-1} u_y - \hat{\omega}\bar{v}
+```
 
 ### Converting Unicycle to Smooth Differential Drive
 
