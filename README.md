@@ -21,7 +21,7 @@ The dynamics of this system are then defined by $\frac{d}{dx}$ which are express
 ## Why epsilon point control
 
 The difficulty with controlling this system is that it contains what is called "non-holonomic" constraints which are non integratable constraints.
-The constraint with this system is that it cannot move orthogonal to orientation.
+The constraint with this system is that it cannot move orthogonal to it's current orientation.
 To alleviate this we utilize something called epsilon point control.
 This basic idea is that if a robot is traveling on a path there is a point $\epsilon$ away that does not have that constraint. So instead of trying to control the robots position we control the position of this point.
 
