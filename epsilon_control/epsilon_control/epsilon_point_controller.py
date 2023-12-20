@@ -103,15 +103,16 @@ class EpsilonPointController(Node):
             states.w_r = sol.T[3, :].tolist()
             states.w_l = sol.T[4, :].tolist()
             self.state_pub.publish(states)
-        self.v = (self.r / 2) * (sol.T[3, :] + sol.T[4, :])
-        self.w = (self.r / self.L) * (sol.T[3, :] - sol.T[4, :])
-        # wait for subscriber to create cmd_vel topic
-        self.cmd_pub = self.create_publisher(Twist, "cmd_vel", 10)
-        # wait for subscriber count to be greater or equal to 1
-        while self.cmd_pub.get_subscription_count() < 1:
-            self.get_logger().info("Waiting for subscriber to cmd_vel")
-        self.command_pointer = 0
-        self.cmd_timer = self.create_timer(0.01, self.send_cmd_vel)
+        else:
+            self.v = (self.r / 2) * (sol.T[3, :] + sol.T[4, :])
+            self.w = (self.r / self.L) * (sol.T[3, :] - sol.T[4, :])
+            # wait for subscriber to create cmd_vel topic
+            self.cmd_pub = self.create_publisher(Twist, "cmd_vel", 10)
+            # wait for subscriber count to be greater or equal to 1
+            while self.cmd_pub.get_subscription_count() < 1:
+                self.get_logger().info("Waiting for subscriber to cmd_vel")
+            self.command_pointer = 0
+            self.cmd_timer = self.create_timer(0.01, self.send_cmd_vel)
         plot_results(np.array(tspan),
                      sol.T, np.array(controls).T, "r")
 
