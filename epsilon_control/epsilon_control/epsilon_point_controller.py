@@ -60,7 +60,8 @@ class EpsilonPointController(Node):
             epsilon,
             r: float,
             L: float,
-            x_0: npt.NDArray[np.float64]
+            x_0: npt.NDArray[np.float64],
+            plot_sim: bool = False
     ) -> None:
         """Initialize.
 
@@ -73,11 +74,14 @@ class EpsilonPointController(Node):
         super().__init__("epsilon_point_controller")  # type: ignore
         self.state_pub = self.create_publisher(
             StatePlotting, "state_plotting", 10)
-        self.A = np.array([[0, 0, 1, 0], [0, 0, 0, 1],
-                          [0, 0, 0, 0], [0, 0, 0, 0]])
+        self.A = np.array([[0, 0, 1, 0],
+                           [0, 0, 0, 1],
+                           [0, 0, 0, 0],
+                           [0, 0, 0, 0]])
         self.B = np.array([[0, 0], [0, 0], [1, 0], [0, 1]])
-        Q = np.diag([1, 2, 3, 4])
-        R = np.diag([1, 2])
+        Q = np.diag([1, 1, 1/(1.86**2), 1/(.26)])
+        # Q = np.eye(4)
+        R = np.diag([1, 1])
         self.r = r
         self.L = L
         self.k = ct.lqr(self.A, self.B, Q, R)[0]
@@ -85,28 +89,31 @@ class EpsilonPointController(Node):
         self.t_span = np.arange(0, t_f, 0.01)
         self.epsilon = epsilon
         self.controls_history: list[tuple[float, float]] = []
-        self.control_tspan: list[float] = []
         sol = self.ode_int_wrapper(x_0)
         controls, tspan = self.get_all_control_inputs(sol)
-        self.control_tspan = tspan
-        plot_results(np.array(tspan),
-                     sol.T, np.array(controls).T, "r")
-        states = StatePlotting()
-        # print(tspan)
-        states.tspan = self.control_tspan.tolist()
-        states.x = sol.T[0, :].tolist()
-        states.y = sol.T[1, :].tolist()
-        states.phi = sol.T[2, :].tolist()
-        states.w_r = sol.T[3, :].tolist()
-        states.w_l = sol.T[4, :].tolist()
+        self.control_tspan = np.array(tspan)
+        # if plotting is desired
+        if plot_sim:
+            states = StatePlotting()
+            # print(tspan)
+            states.tspan = self.control_tspan.tolist()
+            states.x = sol.T[0, :].tolist()
+            states.y = sol.T[1, :].tolist()
+            states.phi = sol.T[2, :].tolist()
+            states.w_r = sol.T[3, :].tolist()
+            states.w_l = sol.T[4, :].tolist()
+            self.state_pub.publish(states)
         self.v = (self.r / 2) * (sol.T[3, :] + sol.T[4, :])
         self.w = (self.r / self.L) * (sol.T[3, :] - sol.T[4, :])
+        # wait for subscriber to create cmd_vel topic
         self.cmd_pub = self.create_publisher(Twist, "cmd_vel", 10)
-        self.state_pub.publish(states)
-        self.get_logger().info("Published states")
+        # wait for subscriber count to be greater or equal to 1
+        while self.cmd_pub.get_subscription_count() < 1:
+            self.get_logger().info("Waiting for subscriber to cmd_vel")
         self.command_pointer = 0
         self.cmd_timer = self.create_timer(0.01, self.send_cmd_vel)
-        plt.show(block=False)
+        plot_results(np.array(tspan),
+                     sol.T, np.array(controls).T, "r")
 
     def calc_epsilon_states(
         self, t: float, x: npt.NDArray[np.float64]
@@ -166,6 +173,11 @@ class EpsilonPointController(Node):
             # self.get_logger().info(
             # f"v: {cmd_vel.linear.x}, w: {cmd_vel.angular.z}")
             self.command_pointer += 1
+        else:
+            self.get_logger().info("Stopping robot")
+            self.cmd_pub.publish(Twist())
+            self.cmd_timer.cancel()
+            plt.show()
 
     def calc_abar(
         self, x: npt.NDArray[np.float64], u: npt.NDArray[np.float64]
@@ -269,8 +281,8 @@ class EpsilonPointController(Node):
         a = u.item(0)
         alpha = u.item(1)
         self.controls_history.append((a, alpha))
-        u_r = a / self.r - (self.L / 2 / self.r) * alpha
-        u_l = (self.L / self.r) * alpha + a / self.r
+        u_r = a / self.r + (self.L / 2 / self.r) * alpha
+        u_l = a / self.r - (self.L / 2 / self.r) * alpha
         return [u_r, u_l]
 
     def get_all_control_inputs(
@@ -359,7 +371,8 @@ def plot_results(
 
 def main(args=None):
     rclpy.init(args=args)
-    node = EpsilonPointController(30, .01, 65, 140, np.array([0, 0, 0, 0, 0]))
+    node = EpsilonPointController(
+        30, .01, 65/1000, 140/1000, np.array([0, 0, 0, 0, 0]))
     rclpy.spin(node)
 
 

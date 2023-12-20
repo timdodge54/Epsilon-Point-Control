@@ -74,9 +74,15 @@ using this we can create an feed back linearized system.
 
 ### Finding control gains for the system
 
-Now that we have a linearized system we can find the control gains for the system. This can be done with either pole placement or LQR. For this I used LQR but since there is no cost associated with system states the Q and R matrices are identity matrices.
+Now that we have a linearized system we can find the control gains for the system. This can be done with either pole placement or LQR. However, since I will eventually be controlling a turtlbot3 robot there and the maimum linear velocity is 0.26 m/s and the maximum angular velocity is 1.82 rad/s I will use LQR to find the control gains. This lends itself to using bryson's method to define our Q matrix. The gain matrix is found with the following.
 
-$$k = lqr(A,B,Q,R)\, \text{ where } Q = diag([1,1,1,1]), \, R = diag([1,1])$$
+```math
+k = lqr(A,B,Q,R)\, \text{ where } Q = \begin{bmatrix}1e-6 & 0 & 0 & 0\\
+                                                0 &1e-6 & 0 & 0 \\
+                                                0&0&\frac{1}{.26^2} & 0\\
+                                                0 & 0 & 0 & \frac{1}{1.86^2}
+                                        \end{bmatrix},  R = I \in \mathbb{R}^2$$
+```
 
 The control input for the linearized system is then
 
