@@ -70,33 +70,40 @@ class EpsilonPointController(Node):
             epsilon: epsilon value for epsilon point control
             r: wheel radius
             L: wheelbase
+            x_0: initial state vector
         """
         super().__init__("epsilon_point_controller")  # type: ignore
         self.state_pub = self.create_publisher(
             StatePlotting, "state_plotting", 10)
+        # defined feedback linearized state space matrices
         self.A = np.array([[0, 0, 1, 0],
                            [0, 0, 0, 1],
                            [0, 0, 0, 0],
                            [0, 0, 0, 0]])
         self.B = np.array([[0, 0], [0, 0], [1, 0], [0, 1]])
+        # define LQR gain matrices
         Q = np.diag([1, 1, 1/(1.86**2), 1/(.26)])
-        # Q = np.eye(4)
-        R = np.diag([1, 1])
+        R = np.eye(2)
         self.r = r
         self.L = L
+        # calculate LQR gain matrix
         self.k = ct.lqr(self.A, self.B, Q, R)[0]
-        # print(f"K: {self.k}")
+        # define the time span for the simulation
         self.t_span = np.arange(0, t_f, 0.01)
+        # define epsilon value
         self.epsilon = epsilon
+        # the control history found after the simulation
         self.controls_history: list[tuple[float, float]] = []
+        # call the simulation to calculate all states over the entire time span
         sol = self.ode_int_wrapper(x_0)
-        controls, tspan = self.get_all_control_inputs(sol)
-        self.control_tspan = np.array(tspan)
-        # if plotting is desired
+        # get the controls input
+        controls = self.get_all_control_inputs(sol)
+        # toggle between plotting the simulation or sending the commands to 
+        # the robot
         if plot_sim:
+            # create the plotting message and send to the plotter
             states = StatePlotting()
-            # print(tspan)
-            states.tspan = self.control_tspan.tolist()
+            states.tspan = self.t_span.tolist()
             states.x = sol.T[0, :].tolist()
             states.y = sol.T[1, :].tolist()
             states.phi = sol.T[2, :].tolist()
@@ -104,6 +111,7 @@ class EpsilonPointController(Node):
             states.w_l = sol.T[4, :].tolist()
             self.state_pub.publish(states)
         else:
+            # calculate the velocity control inputs over the entire time span
             self.v = (self.r / 2) * (sol.T[3, :] + sol.T[4, :])
             self.w = (self.r / self.L) * (sol.T[3, :] - sol.T[4, :])
             # wait for subscriber to create cmd_vel topic
@@ -111,9 +119,10 @@ class EpsilonPointController(Node):
             # wait for subscriber count to be greater or equal to 1
             while self.cmd_pub.get_subscription_count() < 1:
                 self.get_logger().info("Waiting for subscriber to cmd_vel")
+            # create a cmd pointer that decides which command to send
             self.command_pointer = 0
             self.cmd_timer = self.create_timer(0.01, self.send_cmd_vel)
-        plot_results(np.array(tspan),
+        plot_results(np.array(self.t_span),
                      sol.T, np.array(controls).T, "r")
 
     def calc_epsilon_states(
@@ -142,18 +151,22 @@ class EpsilonPointController(Node):
         Returns:
             q, q_dot, q_d_dot, y_epsilon, y_epsilon_dot
         """
+        # unpack and define variables needed for calculations
         x_1 = x.item(0)
         x_2 = x.item(1)
         phi = x.item(2)
         v = (self.r / 2) * (x.item(3) + x.item(4))
         omega = (self.r / self.L) * (x.item(3) - x.item(4))
+        # define the desired state vectors
         q: npt.NDArray[np.float64] = np.array([[np.sin(t)], [t]])
         q_dot: npt.NDArray[np.float64] = np.array([[np.cos(t)], [1]])
         q_d_dot: npt.NDArray[np.float64] = np.array([[-np.sin(t)], [0]])
+        # calulate y_epsilon 
         y_epsilon: npt.NDArray[np.float64] = (np.array([[x_1], [x_2]])
                                               + self.epsilon * np.array(
             [[np.cos(phi)], [np.sin(phi)]]
         ))
+        # precalculate needed vectors for y_epsilon_dot
         R_epsilon: npt.NDArray[np.float64] = np.array(
             [
                 [np.cos(phi), -self.epsilon * np.sin(phi)],
@@ -161,19 +174,20 @@ class EpsilonPointController(Node):
             ]
         )
         v_bar: npt.NDArray[np.float64] = np.array([[v], [omega]])
+        # calculate y_epsilon_dot
         y_epsilon_dot: npt.NDArray[np.float64] = R_epsilon @ v_bar
         return q, q_dot, q_d_dot, y_epsilon, y_epsilon_dot
 
     def send_cmd_vel(self) -> None:
-        # self.get_logger().info(f"command_pointer: {self.command_pointer}")
+        """Callback for sending command at time command pointer."""
+        # check if the command pointer has exceeded the simulation time
         if self.command_pointer < len(self.v):
             cmd_vel = Twist()
             cmd_vel.linear.x = self.v[self.command_pointer]
             cmd_vel.angular.z = self.w[self.command_pointer]
             self.cmd_pub.publish(cmd_vel)
-            # self.get_logger().info(
-            # f"v: {cmd_vel.linear.x}, w: {cmd_vel.angular.z}")
             self.command_pointer += 1
+        # if not stop the robot and cancel the timer
         else:
             self.get_logger().info("Stopping robot")
             self.cmd_pub.publish(Twist())
@@ -247,14 +261,17 @@ class EpsilonPointController(Node):
         Returns:
             x_dot: state vector derivative
         """
+        # unpack variables for clarity
         u = self.calculate_input(t, x)
         a = u.item(0)
         alpha = u.item(1)
         w_r = x.item(3)
         w_l = x.item(4)
         theta = x.item(2)
+        # define accelerations
         u_l = (a / self.r) - (self.L / 2 / self.r) * alpha
         u_r = (self.L / self.r / 2) * alpha + (a / self.r)
+        # define the derivative of the state vector
         x_dot = np.array(
             [
                 [(self.r / 2) * (w_r + w_l) * np.cos(theta)],
@@ -264,6 +281,7 @@ class EpsilonPointController(Node):
                 [u_l],
             ]
         )
+        # flatten the array for odeint
         x_dot = x_dot.flatten()
         return x_dot
 
@@ -289,7 +307,7 @@ class EpsilonPointController(Node):
     def get_all_control_inputs(
             self,
             x_sol: npt.NDArray
-    ) -> tuple[list[float], npt.NDArray[np.float64]]:
+    ) -> list[list[float]]:
         """Wrapper for getting all control inputs.
 
         Args:
@@ -297,14 +315,12 @@ class EpsilonPointController(Node):
 
         Returns:
             control_inputs: list of control inputs
-            t_span: time span
         """
         control_inputs = []
-        # print(x_sol[1].shape)
         for i, t in enumerate(self.t_span):
             x = x_sol[i]
             control_inputs.append(self.get_control_input(x, t))
-        return control_inputs, self.t_span
+        return control_inputs
 
     def ode_int_wrapper(
             self, x_0: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
