@@ -164,7 +164,7 @@ class EpsilonPointController(Node):
             cmd_vel.angular.z = self.w[self.command_pointer]
             self.cmd_pub.publish(cmd_vel)
             # self.get_logger().info(
-                # f"v: {cmd_vel.linear.x}, w: {cmd_vel.angular.z}")
+            # f"v: {cmd_vel.linear.x}, w: {cmd_vel.angular.z}")
             self.command_pointer += 1
 
     def calc_abar(
@@ -359,7 +359,7 @@ def plot_results(
 
 def main(args=None):
     rclpy.init(args=args)
-    node = EpsilonPointController(30, .01, 1, 1, np.array([0, 0, 0, 0, 0]))
+    node = EpsilonPointController(30, .01, 65, 140, np.array([0, 0, 0, 0, 0]))
     rclpy.spin(node)
 
 

@@ -85,6 +85,7 @@ $$ u_y = u_{ff} - k (y - y_{des})$$
 ```math
 u_{ff} = \ddot{y}_\epsilon
 ```
+
 $y_{des}$ is the desired state of the system.
 
 This control can then be converted to the control for the unicycle model by the following equations.
@@ -191,5 +192,6 @@ source install/setup.bash
 Then run the ros2 simulation
 
 ```bash
+export TURTLEBOT3_MODEL=burger
 ros2 launch epsilon_control launch_controller_turtle_sim.launch.py
 ```
